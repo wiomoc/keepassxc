@@ -29,8 +29,8 @@
 #include <QMenu>
 #include <QSortFilterProxyModel>
 #include <QTemporaryFile>
-#include <autotype/AutoType.h>
 
+#include "autotype/AutoType.h"
 #include "core/Config.h"
 #include "core/Database.h"
 #include "core/Entry.h"
