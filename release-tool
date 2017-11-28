@@ -37,9 +37,10 @@ DOCKER_CONTAINER_NAME="keepassxc-build-container"
 CMAKE_OPTIONS=""
 COMPILER="g++"
 MAKE_OPTIONS="-j8"
-BUILD_PLUGINS="autotype http yubikey"
+BUILD_PLUGINS="autotype http yubikey sshagent"
 INSTALL_PREFIX="/usr/local"
 BUILD_SOURCE_TARBALL=true
+BUILD_NIGHTLY=false
 ORIG_BRANCH=""
 ORIG_CWD="$(pwd)"
 
@@ -112,6 +113,7 @@ Options:
   -p, --plugins           Space-separated list of plugins to build
                           (default: ${BUILD_PLUGINS})
   -n, --no-source-tarball Don't build source tarball
+  --nightly               Perform a nightly build (checkout develop; use nightly cmake var)
   -h, --help              Show this help
 EOF
     elif [ "gpgsign" == "$cmd" ]; then
@@ -562,6 +564,9 @@ build() {
             
             -n|--no-source-tarball)
                 BUILD_SOURCE_TARBALL=false ;;
+
+            --nightly)
+                BUILD_NIGHTLY=true ;;
             
             -h|--help)
                 printUsage "build"
@@ -580,8 +585,17 @@ build() {
 
     OUTPUT_DIR="$(realpath "$OUTPUT_DIR")"
 
-    logInfo "Checking out release tag '${TAG_NAME}'..."
-    git checkout "$TAG_NAME"
+    if $BUILD_NIGHTLY; then
+        TAG_NAME="HEAD"
+        logInfo "Checking out and updating develop branch..."
+        git checkout develop
+        git pull origin develop
+        local git_rev=`git rev-parse --short HEAD`
+        RELEASE_NAME="${RELEASE_NAME}_${git_rev}"
+    else
+        logInfo "Checking out release tag '${TAG_NAME}'..."
+        git checkout "$TAG_NAME"
+    fi
 
     logInfo "Creating output directory..."
     mkdir -p "$OUTPUT_DIR"
@@ -606,6 +620,10 @@ build() {
     for p in $BUILD_PLUGINS; do
         CMAKE_OPTIONS="${CMAKE_OPTIONS} -DWITH_XC_$(echo $p | tr '[:lower:]' '[:upper:]')=On"
     done
+
+    if $BUILD_NIGHTLY; then
+        CMAKE_OPTIONS="${CMAKE_OPTIOS} -DKEEPASSXC_NIGHTLY_BUILD=On -DKEEPASSXC_NIGHTLY_VERSION=${RELEASE_NAME}"
+    fi
     
     if [ "$COMPILER" == "g++" ]; then
         export CC=gcc
