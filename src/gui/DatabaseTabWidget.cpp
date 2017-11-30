@@ -211,11 +211,11 @@ void DatabaseTabWidget::openDatabase(const QString& fileName, const QString& pw,
 
     if (!(pw.isNull() && keyFile.isEmpty())) {
         dbStruct.dbWidget->switchToOpenDatabase(dbStruct.filePath, pw, keyFile);
-    }
-    else {
+    } else {
         dbStruct.dbWidget->switchToOpenDatabase(dbStruct.filePath);
     }
-    emit messageDismissGlobal();
+
+    emit messageDismissTab();
 }
 
 void DatabaseTabWidget::importCsv()

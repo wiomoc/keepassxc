@@ -351,6 +351,12 @@ MainWindow::MainWindow()
             tr("Access error for config file %1").arg(config()->getFileName()), MessageWidget::Error);
     }
 
+#ifdef KEEPASSXC_NIGHTLY_BUILD
+    m_ui->globalMessageWidget->showMessage(tr("WARNING: You are using a potentially unstable build of KeePassXC.\n"
+                                              "Backup your databases prior to using, this is your only warning.\n"
+                                              "This version is not meant for production use."),
+                                           MessageWidget::Warning, -1);
+#endif
 }
 
 MainWindow::~MainWindow()
