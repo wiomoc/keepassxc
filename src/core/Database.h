@@ -57,17 +57,15 @@ public:
         Uuid cipher;
         CompressionAlgorithm compressionAlgo;
         QByteArray transformedMasterKey;
-        Kdf* kdf;
+        QSharedPointer<Kdf> kdf;
         CompositeKey key;
         bool hasKey;
         QByteArray masterSeed;
         QByteArray challengeResponseKey;
-
-        ~DatabaseData();
     };
 
     Database();
-    ~Database();
+    ~Database() override;
     Group* rootGroup();
     const Group* rootGroup() const;
 
@@ -90,7 +88,7 @@ public:
 
     Uuid cipher() const;
     Database::CompressionAlgorithm compressionAlgo() const;
-    Kdf* kdf() const;
+    QSharedPointer<Kdf> kdf() const;
     QByteArray transformedMasterKey() const;
     const CompositeKey& key() const;
     QByteArray challengeResponseKey() const;
@@ -98,7 +96,7 @@ public:
 
     void setCipher(const Uuid& cipher);
     void setCompressionAlgo(Database::CompressionAlgorithm algo);
-    void setKdf(Kdf* kdf);
+    void setKdf(QSharedPointer<Kdf> kdf);
     bool setKey(const CompositeKey& key, bool updateChangedTime = true,
                 bool updateTransformSalt = false);
     bool hasKey() const;
@@ -115,7 +113,7 @@ public:
      * Returns a unique id that is only valid as long as the Database exists.
      */
     Uuid uuid();
-    bool changeKdf(Kdf* kdf);
+    bool changeKdf(QSharedPointer<Kdf> kdf);
 
     static Database* databaseByUuid(const Uuid& uuid);
     static Database* openDatabaseFile(QString fileName, CompositeKey key);
