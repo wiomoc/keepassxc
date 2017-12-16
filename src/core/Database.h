@@ -90,7 +90,7 @@ public:
 
     Uuid cipher() const;
     Database::CompressionAlgorithm compressionAlgo() const;
-    Kdf* kdf();
+    Kdf* kdf() const;
     QByteArray transformedMasterKey() const;
     const CompositeKey& key() const;
     QByteArray challengeResponseKey() const;
