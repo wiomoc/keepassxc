@@ -30,6 +30,7 @@
 #include "keys/PasswordKey.h"
 #include "crypto/Random.h"
 #include "keys/YkChallengeResponseKey.h"
+#include "keys/TouchID.h"
 
 #include "config-keepassx.h"
 
@@ -134,6 +135,13 @@ void DatabaseOpenWidget::load(const QString& filename)
     }
 
     m_ui->editPassword->setFocus();
+	
+#ifdef WITH_XC_TOUCHID
+    TouchIDKey* key;
+    if((key = TouchID::getKey(filename)) != NULL) {
+   	    openDatabase(QSharedPointer<TouchIDKey>(key));
+    }
+#endif
 }
 
 void DatabaseOpenWidget::clearForms()
@@ -167,8 +175,11 @@ void DatabaseOpenWidget::enterKey(const QString& pw, const QString& keyFile)
 
 void DatabaseOpenWidget::openDatabase()
 {
+	openDatabase(databaseKey());
+}
+void DatabaseOpenWidget::openDatabase(QSharedPointer<CompositeKey> masterKey)
+{
     KeePass2Reader reader;
-    QSharedPointer<CompositeKey> masterKey = databaseKey();
     if (masterKey.isNull()) {
         return;
     }

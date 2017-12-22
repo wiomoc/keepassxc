@@ -57,6 +57,10 @@
 #include "gui/SettingsWidget.h"
 #include "gui/PasswordGeneratorWidget.h"
 
+#ifdef WITH_XC_TOUCHID
+#include "keys/TouchID.h"
+#endif
+
 #ifdef WITH_XC_HTTP
 class HttpPlugin: public ISettingsPage
 {
@@ -212,6 +216,10 @@ MainWindow::MainWindow()
     m_ui->actionSettings->setIcon(filePath()->icon("actions", "configure"));
     m_ui->actionSettings->setMenuRole(QAction::PreferencesRole);
     m_ui->actionPasswordGenerator->setIcon(filePath()->icon("actions", "password-generator", false));
+#ifdef WITH_XC_TOUCHID
+    connect(m_ui->actionTouchID, SIGNAL(triggered()),
+            m_ui->tabWidget, SLOT(enableTouchID()));
+#endif
 
     m_ui->actionAbout->setIcon(filePath()->icon("actions", "help-about"));
     m_ui->actionAbout->setMenuRole(QAction::AboutRole);
@@ -469,6 +477,10 @@ void MainWindow::setMenuActionState(DatabaseWidget::Mode mode)
             m_ui->actionDatabaseSaveAs->setEnabled(true);
             m_ui->actionExportCsv->setEnabled(true);
             m_ui->actionDatabaseMerge->setEnabled(m_ui->tabWidget->currentIndex() != -1);
+#ifdef WITH_XC_TOUCHID
+            if(TouchID::isAvailable())
+                m_ui->actionTouchID->setVisible(true);
+#endif
 
             m_searchWidgetAction->setEnabled(true);
 
@@ -536,6 +548,9 @@ void MainWindow::setMenuActionState(DatabaseWidget::Mode mode)
         m_ui->actionDatabaseMerge->setEnabled(false);
 
         m_searchWidgetAction->setEnabled(false);
+#ifdef WITH_XC_TOUCHID
+        m_ui->actionTouchID->setVisible(false);
+#endif
     }
 
     bool inDatabaseTabWidgetOrWelcomeWidget = inDatabaseTabWidget || inWelcomeWidget;

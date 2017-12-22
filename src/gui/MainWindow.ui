@@ -259,6 +259,7 @@
     <addaction name="actionLockDatabases"/>
     <addaction name="actionPasswordGenerator"/>
     <addaction name="actionSettings"/>
+    <addaction name="actionTouchID"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEntries"/>
@@ -558,6 +559,14 @@
   <action name="actionGroupEmptyRecycleBin">
    <property name="text">
     <string>E&amp;mpty recycle bin</string>
+   </property>
+   <property name="visible">
+    <bool>false</bool>
+   </property>
+  </action>
+  <action name="actionTouchID">
+   <property name="text">
+    <string>Enable TouchID</string>
    </property>
    <property name="visible">
     <bool>false</bool>

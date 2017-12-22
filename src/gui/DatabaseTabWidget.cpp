@@ -39,6 +39,9 @@
 #include "gui/entry/EntryView.h"
 #include "gui/group/GroupView.h"
 #include "gui/UnlockDatabaseDialog.h"
+#ifndef WITH_XC_TOUCHID
+#include "keys/TouchID.h"
+#endif
 
 DatabaseManagerStruct::DatabaseManagerStruct()
     : dbWidget(nullptr)
@@ -914,3 +917,13 @@ void DatabaseTabWidget::performGlobalAutoType()
         indexDatabaseManagerStruct(0).dbWidget->showUnlockDialog();
     }
 }
+
+#ifdef WITH_XC_TOUCHID
+void DatabaseTabWidget::enableTouchID(int index){
+    if (index == -1) {
+        index = currentIndex();
+    }
+    Database* db = indexDatabase(index);
+    TouchID::saveKey(m_dbList[db].filePath, const_cast<Key*>(static_cast<const Key*>(&db->key())));
+}
+#endif

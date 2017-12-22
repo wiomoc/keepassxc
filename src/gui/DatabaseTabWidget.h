@@ -83,6 +83,9 @@ public slots:
     void performGlobalAutoType();
     void lockDatabases();
     QString databasePath(int index = -1);
+#ifdef WITH_XC_TOUCHID
+    void enableTouchID(int index = -1);
+#endif
 
 signals:
     void tabNameChanged();

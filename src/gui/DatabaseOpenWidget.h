@@ -75,6 +75,7 @@ protected:
 private:
     bool m_yubiKeyBeingPolled = false;
     Q_DISABLE_COPY(DatabaseOpenWidget)
+    void openDatabase(QSharedPointer<CompositeKey> masterKey);
 };
 
 #endif // KEEPASSX_DATABASEOPENWIDGET_H
